@@ -37,7 +37,7 @@ const weddingConfig = {
     ar: "كنيسة رئيس الملائكة ميخائيل بجرجا\nوحفل الاستقبال بقاعة القصر الذهبي"
   },
   googleMapsUrl: "https://www.google.com/maps/place/%D9%82%D8%A7%D8%B9%D8%A9+%D8%A7%D9%84%D9%82%D8%B5%D8%B1+%D8%A7%D9%84%D8%B0%D9%87%D8%A8%D9%8A%E2%80%AD/@26.3493954,31.885048,17z/data=!3m1!4b1!4m6!3m5!1s0x144f4fbf26509575:0x24fc2f2064b39300!8m2!3d26.3493906!4d31.8876229!16s%2Fg%2F11ts4cj0v_?hl=en-US",
-  music: "assets/music/ordinary-alex-warren.mp3",
+  music: "assets/music/perfect.mp3",
   gallery: [
     "assets/images/gallery-1.jpg",
     "assets/images/gallery-2.jpg",
