@@ -12,3 +12,10 @@ perfect_*.png
 guestbook_*.png
 *.pyc
 __pycache__/
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+.env*
+!.env.example
