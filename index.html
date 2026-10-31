@@ -917,15 +917,29 @@
       wishes.unshift(newEntry);
       localStorage.setItem('wedding_private_wishes', JSON.stringify(wishes));
 
-      // 2. Sync to live Google Sheets via /api/wishes
+      // 2. Sync to live Google Sheets
+      if (typeof GOOGLE_SHEETS_WEBAPP_URL !== 'undefined' && GOOGLE_SHEETS_WEBAPP_URL && GOOGLE_SHEETS_WEBAPP_URL.trim() !== '') {
+        fetch(GOOGLE_SHEETS_WEBAPP_URL.trim(), {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newEntry)
+        }).then(() => {
+          console.log('[Google Sheets Web App] Wish dispatched successfully');
+        }).catch(err => {
+          console.log('[Google Sheets Web App] Dispatch notice:', err);
+        });
+      }
+
+      // Also dispatch to local server if running locally
       fetch('/api/wishes', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newEntry)
       }).then(r => r.json()).then(data => {
-        console.log('[Google Sheets] Successfully appended row:', data);
+        console.log('[Local Server] Successfully appended row:', data);
       }).catch(err => {
-        console.log('[Google Sheets] Sync notice:', err);
+        // Expected when hosted on static platforms
       });
 
       // 3. Switch to Success Box
