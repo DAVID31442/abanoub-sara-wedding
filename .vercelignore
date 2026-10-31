@@ -1,0 +1,9 @@
+*.py
+*.log
+*.json
+*.md
+*.txt
+.git
+__pycache__
+preview_*.png
+temp_*

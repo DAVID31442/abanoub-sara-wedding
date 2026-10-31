@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Abanoub &amp; Sara | Wedding Invitation</title>
+  
+  <!-- Original Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,400&family=Ms+Madi&family=The+Nautigal:wght@400;700&family=Uchen&family=Viaoda+Libre&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+
+    <!-- Leaflet Map CSS & JS for Crisp High-Res Venue Mapping -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Original CSS Bundles -->
+  <link rel="stylesheet" href="assets/css/bundle_0.css">
+  <link rel="stylesheet" href="assets/css/bundle_1.css">
+
+  <style>
+    /* Exact font family bindings */
+    .font-the-nautigal, [class*="The_Nautigal"], [style*="The Nautigal"] {
+      font-family: 'The Nautigal', cursive !important;
+    }
+    .font-ms-madi, [class*="Ms_Madi"], [style*="Ms Madi"] {
+      font-family: 'Ms Madi', cursive !important;
+    }
+    .font-cormorant, [class*="Cormorant_Garamond"], [style*="Cormorant Garamond"] {
+      font-family: 'Cormorant Garamond', serif !important;
+    }
+    .font-viaoda, [class*="Viaoda_Libre"], [style*="Viaoda Libre"] {
+      font-family: 'Viaoda Libre', cursive !important;
+    }
+    .font-uchen, [class*="Uchen"], [style*="Uchen"] {
+      font-family: 'Uchen', serif !important;
+    }
+
+    /* Keyframes for drFloat if missing */
+    @keyframes drFloat {
+      0%, 100% { transform: translateY(0px) rotate(12deg); }
+      50% { transform: translateY(-8px) rotate(14deg); }
+    }
+
+    /* Envelope dismissal animation */
+    #invite-envelope-container {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #380a0e;
+      transition: opacity 1.2s cubic-bezier(0.16, 1, 0.3, 1), transform 1.2s cubic-bezier(0.16, 1, 0.3, 1), visibility 1.2s;
+    }
+
+    #invite-envelope-container.opened {
+      opacity: 0;
+      transform: translateY(-130vh) scale(0.9);
+      pointer-events: none;
+      visibility: hidden;
+    }
+
+    /* Floating Music Pill Button (Matching Reference) */
+    .floating-music-pill {
+      position: fixed;
+      bottom: 24px;
+      left: 24px;
+      background: rgba(254, 252, 248, 0.94);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(197, 160, 89, 0.55);
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.22);
+      border-radius: 9999px;
+      padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      cursor: pointer;
+      z-index: 9000;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .floating-music-pill:hover {
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 22px rgba(81, 20, 25, 0.3);
+      border-color: rgba(197, 160, 89, 0.9);
+      background: #ffffff;
+    }
+    .music-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 2.5px;
+      height: 14px;
+    }
+    .music-bars .bar {
+      width: 2.5px;
+      background: #7a5833;
+      border-radius: 2px;
+      transition: height 0.2s ease;
+    }
+    .music-bars .bar-1 { height: 6px; }
+    .music-bars .bar-2 { height: 13px; }
+    .music-bars .bar-3 { height: 8px; }
+    .music-bars .bar-4 { height: 14px; }
+
+    .floating-music-pill.playing .bar-1 {
+      animation: soundwave 0.9s ease-in-out infinite alternate;
+    }
+    .floating-music-pill.playing .bar-2 {
+      animation: soundwave 0.7s ease-in-out 0.2s infinite alternate;
+    }
+    .floating-music-pill.playing .bar-3 {
+      animation: soundwave 1.1s ease-in-out 0.4s infinite alternate;
+    }
+    .floating-music-pill.playing .bar-4 {
+      animation: soundwave 0.8s ease-in-out 0.15s infinite alternate;
+    }
+
+    @keyframes soundwave {
+      0% { height: 3px; }
+      100% { height: 14px; }
+    }
+
+    .music-label {
+      font-family: 'Times New Roman', serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: #7a5833;
+      text-transform: uppercase;
+      line-height: 1;
+    }
+
+    /* ==================== BESPOKE ROYAL GUESTBOOK STYLING ==================== */
+    .guestbook-card-container {
+      position: relative;
+      background: rgb(81, 20, 25);
+      border-radius: 13px;
+      box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.25);
+      overflow: hidden;
+      border: 1px solid rgba(197, 160, 89, 0.35);
+    }
+    .stationery-sheet {
+      position: relative;
+      background: #fdfaf4;
+      border-radius: 9px;
+      border: 1px solid rgba(197, 160, 89, 0.45);
+      box-shadow: inset 0 0 15px rgba(138, 101, 56, 0.08), 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+    .ruled-stationery-lines {
+      background-image: repeating-linear-gradient(transparent, transparent 27px, #e8ddce 28px);
+      line-height: 28px;
+      padding-top: 2px;
+      border: none;
+      outline: none;
+    }
+    .ruled-stationery-lines:focus {
+      background-image: repeating-linear-gradient(transparent, transparent 27px, #c5a059 28px);
+    }
+    .monogram-seal-gold {
+      background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.2), transparent 70%),
+                  linear-gradient(135deg, #c5a059 0%, #8a6538 50%, #5e3f1c 100%);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35), inset 0 1px 2px rgba(255, 255, 255, 0.4);
+      border: 1.5px solid rgba(254, 243, 199, 0.6);
+    }
+
+    /* Gallery Lightbox */
+    #lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 10000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    #lightbox-overlay.active {
+      display: flex;
+    }
+    #lightbox-overlay img {
+      max-width: 94vw;
+      max-height: 90vh;
+      object-fit: contain;
+      border-radius: 8px;
+    }
+    .lightbox-close-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      color: #fff;
+      font-size: 32px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  
+    /* Authentic ChungDoi Envelope & Seal Opening Keyframes */
+    @keyframes seal-break { 
+      0% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; filter: brightness(1); }
+      30% { transform: translate(-50%, -50%) scale(1.18) rotate(6deg); opacity: 0.9; filter: brightness(1.3); }
+      60% { transform: translate(-50%, -50%) scale(1.05) rotate(-4deg); opacity: 0.5; filter: brightness(1.6); }
+      100% { transform: translate(-50%, -50%) scale(0) rotate(15deg); opacity: 0; filter: brightness(2); }
+    }
+
+    @keyframes envelope-away { 
+      0% { transform: translateY(0px) rotate(0deg) scale(1); opacity: 1; }
+      15% { transform: translateY(12px) rotate(0.6deg) scale(1.01); opacity: 1; }
+      100% { transform: translateY(-135vh) rotate(-2.5deg) scale(0.92); opacity: 0; }
+    }
+
+  </style>
+</head>
+<body class="bg-white">
+
+  <!-- Background Music Track -->
+  <audio id="bg-music" loop preload="auto">
+    <source src="assets/music/ordinary-alex-warren.mp3" type="audio/mp3">
+  </audio>
+
+  <!-- Floating Music Pill (Matching Reference) -->
+  <button id="music-btn" class="floating-music-pill" onclick="toggleMusic()" title="Play / Pause Music" aria-label="Music Toggle">
+    <div class="music-bars">
+      <span class="bar bar-1"></span>
+      <span class="bar bar-2"></span>
+      <span class="bar bar-3"></span>
+      <span class="bar bar-4"></span>
+    </div>
+    <span class="music-label">MUSIC</span>
+  </button>
+
+  <!-- ==================== COVER ENVELOPE ==================== -->
+  <div id="invite-envelope-container">
+    <div style="background:linear-gradient(to bottom right, #6e1a20, #511419, #380a0e)" data-landing-screenshot-id="invite-envelope" class="jsx-353cb38c53e4a74a fixed inset-0 z-50 flex items-center justify-center overflow-hidden"><div style="z-index:1" class="jsx-353cb38c53e4a74a absolute inset-0 pointer-events-none overflow-hidden"><div style="left:75.67748844390735%;top:-30px;bottom:auto;color:#c9a24a;font-size:19.95451348135248px;--sway:2.969850325025618px;animation:ambient-fall 25.028136886656284s ease-in-out -4.757677545822757s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:35.20456698257476%;top:-30px;bottom:auto;color:#a8323b;font-size:15.013092810288072px;--sway:24.22241603024304px;animation:ambient-fall 18.622822953388095s ease-in-out -18.076440412673964s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:41.16396020166576%;top:-30px;bottom:auto;color:#7a1f26;font-size:15.182108808774501px;--sway:0.7242579711601138px;animation:ambient-fall 23.44928691536188s ease-in-out -2.9580057087555254s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:27.435595677234232%;top:-30px;bottom:auto;color:#ece4d8;font-size:10.135266334284097px;--sway:-2.7696244418621063px;animation:ambient-fall 19.095110749825835s ease-in-out -11.277694204937042s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:57.642039640340954%;top:-30px;bottom:auto;color:#a8323b;font-size:17.938714534044266px;--sway:6.865793368779123px;animation:ambient-fall 21.502746112644672s ease-in-out -18.48212723523864s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:30.61602507950738%;top:-30px;bottom:auto;color:#a8323b;font-size:21.71285645617172px;--sway:7.415292849764228px;animation:ambient-fall 20.567401004955173s ease-in-out -4.584828459871209s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:93.8197582331486%;top:-30px;bottom:auto;color:#ece4d8;font-size:17.126148568466306px;--sway:-9.537522029131651px;animation:ambient-fall 25.056167824193835s ease-in-out -6.585273457601999s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:31.0186897800304%;top:-30px;bottom:auto;color:#a8323b;font-size:17.537898659706116px;--sway:23.24839881621301px;animation:ambient-fall 25.84743932262063s ease-in-out -3.6442523273686964s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:94.96905191801488%;top:-30px;bottom:auto;color:#a8323b;font-size:16.992436666507274px;--sway:4.890213687904179px;animation:ambient-fall 18.809240743517876s ease-in-out -0.7516541512550335s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:16.259288364090025%;top:-30px;bottom:auto;color:#a8323b;font-size:19.404379113111645px;--sway:12.509083086624742px;animation:ambient-fall 24.373009528964758s ease-in-out -1.2865388715891675s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:61.77741889376193%;top:-30px;bottom:auto;color:#ece4d8;font-size:13.239595833234489px;--sway:27.53381034359336px;animation:ambient-fall 23.82920717447996s ease-in-out -13.140707090059337s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div><div style="left:83.5045243985951%;top:-30px;bottom:auto;color:#a8323b;font-size:21.327502123545855px;--sway:29.70172901172191px;animation:ambient-fall 25.260174503549933s ease-in-out -24.883685032896267s infinite" class="jsx-353cb38c53e4a74a absolute"><svg viewBox="0 0 24 24" fill="currentColor" width="1em" height="1em"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"></path></svg></div></div><div style="z-index:10" class="jsx-353cb38c53e4a74a relative"><div class="jsx-353cb38c53e4a74a relative w-[310px] sm:w-[340px] md:w-[520px] lg:w-[600px]"><div style="top:50px;width:56px;height:56px;transform:translate(-50%, -50%);background:radial-gradient(circle at 30% 30%, #511419, rgb(51, 0, 0));--shadow-color:rgba(81, 20, 25, 0.5);box-shadow:0 4px 20px rgba(81, 20, 25, 0.5), inset 0 2px 4px rgba(255,255,255,0.3);z-index:30;animation:seal-pulse 2s ease-in-out infinite" id="envelope-wax-seal" class="jsx-353cb38c53e4a74a absolute left-1/2 rounded-full flex items-center justify-center"><svg style="fill:#f3e8de" viewBox="0 0 24 24" class="jsx-353cb38c53e4a74a w-7 h-7"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" class="jsx-353cb38c53e4a74a"></path></svg></div><div style="box-shadow:0 25px 60px -12px rgba(0, 0, 0, 0.45), 0 8px 24px rgba(0, 0, 0, 0.2), 0 0 40px rgba(81, 20, 25, 0.15)" class="jsx-353cb38c53e4a74a relative rounded-lg"><div style="background:rgba(255, 250, 243, 0.96);border:1px solid rgba(81, 20, 25, 0.15);clip-path:inset(0 round 8px)" class="jsx-353cb38c53e4a74a absolute inset-0 rounded-lg overflow-hidden"><img src="images/themes/minimalism-dark-red/flower2-decoration.webp" alt="" aria-hidden="true" class="jsx-353cb38c53e4a74a absolute pointer-events-none h-36 md:h-70 lg:h-70 w-auto max-w-none top-[-5%] md:top-[-2%] left-[-10px] md:left-[-10px] -translate-x-[6%] md:-translate-x-[11%] opacity-80 rotate-[25deg]"><img src="images/themes/minimalism-dark-red/flower2-decoration.webp" alt="" aria-hidden="true" class="jsx-353cb38c53e4a74a absolute pointer-events-none h-36 md:h-70 lg:h-70 w-auto max-w-none bottom-[-5%] md:bottom-[35%] right-[-10px] md:right-[-10px] translate-x-[6%] md:translate-x-[11%] -scale-x-100 opacity-80 -rotate-[25deg]"></div><div class="jsx-353cb38c53e4a74a relative z-10 text-center px-6 pt-28 pb-14 md:pt-24 md:pb-8"><h1 style="color:#511419;font-family:&quot;Viaoda Libre&quot;, &quot;EB Garamond&quot;, ChungDoiIndic, serif" class="jsx-353cb38c53e4a74a mb-2 flex flex-col items-center leading-tight text-3xl sm:text-4xl"><span style="font-family:&quot;Viaoda Libre&quot;, &quot;EB Garamond&quot;, ChungDoiIndic, serif" class="jsx-353cb38c53e4a74a block w-full text-center">Abanoub</span><span style="font-family:&quot;Baskerville&quot;, &quot;Times New Roman&quot;, ChungDoiIndic, serif" class="jsx-353cb38c53e4a74a block w-full text-center text-lg leading-none sm:text-xl">&amp;</span><span style="font-family:&quot;Viaoda Libre&quot;, &quot;EB Garamond&quot;, ChungDoiIndic, serif" class="jsx-353cb38c53e4a74a block w-full text-center">Sara</span></h1><div class="jsx-353cb38c53e4a74a flex items-center justify-center gap-3 mb-2"><div style="background:linear-gradient(to right, transparent, #511419)" class="jsx-353cb38c53e4a74a w-10 h-px"></div><span style="color:#511419;opacity:0.7" class="jsx-353cb38c53e4a74a text-sm">❦</span><div style="background:linear-gradient(to left, transparent, #511419)" class="jsx-353cb38c53e4a74a w-10 h-px"></div></div><div style="color:rgba(81, 20, 25, 0.72);font-family:&quot;Lora&quot;, &quot;Times New Roman&quot;, ChungDoiIndic, serif" class="jsx-353cb38c53e4a74a text-[18px] mb-5 flex flex-col items-center"><span dir="auto">November 08, 2026</span></div><div class="jsx-353cb38c53e4a74a mb-6 max-w-[300px] md:max-w-[380px] lg:max-w-[440px] mx-auto"><p style="color:rgba(81, 20, 25, 0.72);font-family:&quot;Lora&quot;, &quot;Times New Roman&quot;, ChungDoiIndic, serif" class="jsx-353cb38c53e4a74a text-[18px] font-light mb-2"><span dir="auto">Cordially Invites</span></p></div><div id="open-btn-wrapper" onclick="openInvitation(event)" style="cursor:pointer;"><a href="javascript:void(0)" onclick="openInvitation(event)" rel="nofollow" aria-busy="false" style="background-color:#511419;color:#f3e8de;box-shadow:0 4px 14px rgba(81, 20, 25, 0.35);font-family:&quot;Lora&quot;, &quot;Times New Roman&quot;, ChungDoiIndic, serif;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none" class="jsx-353cb38c53e4a74a relative px-8 py-2.5 text-lg font-semibold sm:font-medium rounded-full shadow-lg no-underline cursor-pointer flex w-fit items-center justify-center mx-auto overflow-hidden"><span dir="auto">Open</span><div style="background:linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);animation:shine 3s ease-in-out infinite" class="jsx-353cb38c53e4a74a absolute top-0 h-full w-8 pointer-events-none"></div></a></div></div></div></div></div></div>
+  </div>
+
+  <!-- ==================== MAIN INVITATION CARD ==================== -->
+  <div id="main-content-wrapper" class="min-h-screen w-full bg-white flex justify-center">
+    <div class="flex w-full justify-center overflow-x-clip bg-white" data-testid="minimalism-darkred-template"><div data-showcase-root="" class="relative w-full max-w-[480px] md:max-w-[900px] md:mx-auto overflow-hidden md:border md:border-[#51141922] isolate" style="background-color: rgb(255, 247, 235); color: rgb(81, 20, 25);"><style>@keyframes drFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}</style><div aria-hidden="true" class="pointer-events-none absolute inset-0 z-0" style="background-image: url(&quot;images/themes/minimalism-dark-red/paper.webp&quot;); background-size: 100% auto; background-position: center top; mix-blend-mode: multiply; opacity: 0.5;"></div><header class="relative z-10 flex flex-col items-center overflow-x-clip px-9 pt-15 pb-14 text-center"><img alt="" aria-hidden="true" class="pointer-events-none absolute max-w-none object-contain opacity-[0.1] left-1/2 top-[26%] w-[170%] -translate-x-1/2" src="images/themes/minimalism-dark-red/castle-background.webp"><p class="relative z-10 whitespace-pre-line text-[15px] uppercase md:text-[18px]" style="font-family: &quot;Cormorant Garamond&quot;, &quot;Times New Roman&quot;, ChungDoiIndic, serif; color: rgb(89, 3, 16); letter-spacing: 0.16em; font-weight: 600;">Save The Date</p><div class="relative z-10 mt-24 w-[82%] max-w-[330px] md:mt-28 md:max-w-[420px]"><div class="relative aspect-[333/384]"><img alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 z-10 w-full max-w-none" src="images/themes/minimalism-dark-red/envelope-background.webp"><div class="absolute left-[33%] top-[-2%] z-20 w-[64%]" style="animation: 6.5s ease-in-out 0.4s infinite normal none running drFloat; will-change: transform;"><div class="aspect-[221/309] rotate-[12deg] border-[7px] border-white bg-white shadow-[2px_2px_4px_rgba(0,0,0,0.25)]"><img alt="Abanoub &amp; Sara Wedding Photo" class="h-full w-full object-cover" src="uploads/hero-couple-new.jpg" style="object-position: 50% 18%;"></div></div><span aria-hidden="true" class="pointer-events-none absolute block -left-[2%] -top-[12%] z-[25] w-[42%]"><span class="block" style="animation: 5s ease-in-out 0s infinite normal none running drFloat; will-change: transform;"><img alt="" class="block w-full max-w-none object-contain drop-shadow-[3px_4px_3px_rgba(0,0,0,0.3)] rotate-[-17deg]" src="images/themes/minimalism-dark-red/flower2-decoration.webp"></span></span><img alt="" aria-hidden="true" class="pointer-events-none absolute bottom-0 left-0 z-30 w-full max-w-none" src="images/themes/minimalism-dark-red/envelope-cover.webp"></div></div><div class="relative z-10 mt-16 flex flex-col items-center gap-[22px] md:mt-20"><p class="text-[clamp(36px,10vw,48px)] leading-none md:text-[56px]" style="font-family: &quot;Viaoda Libre&quot;, serif; color: rgb(81, 20, 25);">Abanoub</p><span aria-hidden="true" class="pointer-events-none absolute top-[37%] -translate-y-1/2 translate-x-[0px] text-[92px] leading-none md:text-[120px]" style="font-family: &quot;The Nautigal&quot;, ChungDoiIndic, cursive; color: rgba(81, 20, 25, 0.15);">&amp;</span><p class="text-[clamp(36px,10vw,48px)] leading-none md:text-[56px]" style="font-family: &quot;Viaoda Libre&quot;, serif; color: rgb(81, 20, 25);">Sara</p></div></header><section class="relative z-10 mx-auto w-[88%] max-w-[420px] md:max-w-[560px] "><span aria-hidden="true" class="pointer-events-none absolute block -right-[22%] bottom-[30%] z-20 w-[40%]" style="will-change: transform; transform: translateY(0px);"><span class="block" style="animation: 5.5s ease-in-out 0.6s infinite normal none running drFloat; will-change: transform;"><img alt="" class="block w-full max-w-none object-contain drop-shadow-[3px_4px_3px_rgba(0,0,0,0.3)] " src="images/themes/minimalism-dark-red/flower2-decoration.webp"></span></span><div class="relative overflow-hidden rounded-[13px] px-5 pb-10 pt-9 text-center shadow-[4px_4px_10px_rgba(0,0,0,0.25)]"><div aria-hidden="true" class="absolute inset-0 rounded-[13px]" style="background-color: rgb(81, 20, 25);"></div><img alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 size-full max-w-none object-cover mix-blend-multiply opacity-40 rounded-[13px]" src="images/themes/minimalism-dark-red/paper.webp"><div class="relative z-10 flex flex-col items-center gap-6"><h2 class="uppercase text-center relative z-10" style="color: rgb(236, 228, 216); font-family: 'Times New Roman', ChungDoiIndic, serif; font-weight: 700; letter-spacing: 0.03em;"><span class="text-[20px]"><span dir="auto">WE'RE GETTING MARRIED</span></span></h2>
+<div class="relative flex flex-col gap-2.5 text-center px-2 mx-auto md:max-w-[540px]" style="color: rgb(236, 228, 216); font-family: Baskerville, 'Times New Roman', ChungDoiIndic, serif;">
+  <p class="text-[17px] md:text-[19px] tracking-wide font-medium" style="color: #f3e8de;">We're getting married! 🤍💍</p>
+  <p class="text-[13px] md:text-[14.5px] leading-relaxed opacity-90 max-w-[420px] mx-auto">With joyful hearts, we'd love to celebrate the beginning of our forever with you. ✨</p>
+  <p class="text-[12.5px] md:text-[14px] leading-relaxed opacity-85 max-w-[420px] mx-auto">Your presence will make our special day even more meaningful. 🤍</p>
+  <div class="w-12 h-px bg-[#c5a059]/40 my-1 mx-auto"></div>
+  <p class="text-[13px] md:text-[14.5px] leading-relaxed font-serif text-[#f3e8de]" dir="rtl" style="font-family: 'Amiri', serif;">يشرفنا حضوركم ومشاركتكم فرحتنا، لأن وجودكم هو أجمل هدية لينا. ❤️</p>
+</div>
+<div data-showcase-keep="" class="w-full min-w-0 relative flex w-full min-w-0 flex-col items-center text-center gap-1.5 md:gap-2 mt-4">
+  <h3 class="w-full flex items-center justify-center leading-[50px] whitespace-nowrap" style="font-size: 44px; font-family: 'Viaoda Libre', serif; color: rgb(236, 228, 216); letter-spacing: 0.02em;">Abanoub</h3>
+  <div class="text-[28px]" style="color: #c5a059; font-family: 'Ms Madi', cursive;">&amp;</div>
+  <h3 class="w-full flex items-center justify-center leading-[50px] whitespace-nowrap" style="font-size: 44px; font-family: 'Viaoda Libre', serif; color: rgb(236, 228, 216); letter-spacing: 0.02em;">Sara</h3>
+  <p class="text-[11px] uppercase tracking-[3px] text-[#c5a059] mt-1 font-medium font-cormorant">Abanoub Wafeek &amp; Sara Safwat</p>
+</div></div></div></section><div class="relative z-10 overflow-x-clip"><img alt="" aria-hidden="true" class="pointer-events-none absolute max-w-none object-contain opacity-[0.1] left-1/2 top-[-6%] w-[150%] -translate-x-1/2" src="images/themes/minimalism-dark-red/castle-background.webp"><div class="relative z-10 flex flex-col items-center px-6 pb-10 pt-10"><h2 class="uppercase text-center relative z-10" style="color: rgb(81, 20, 25); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif; font-weight: 700; font-size: 20px; letter-spacing: 0.03em;"><span dir="auto">Photo Gallery</span></h2><div class="relative z-10 mt-5 w-full max-w-[380px] md:max-w-[600px]"><div class="relative h-[340px] md:h-[520px] touch-pan-y"><button type="button" aria-label="Previous photo" id="gallery-prev-btn" class="flex absolute left-0 top-1/2 -translate-y-1/2 z-[200] w-8 h-8 items-center justify-center rounded-full bg-base-200/60 hover:bg-base-200 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path></svg></button><button type="button" aria-label="Next photo" id="gallery-next-btn" class="flex absolute right-0 top-1/2 -translate-y-1/2 z-[200] w-8 h-8 items-center justify-center rounded-full bg-base-200/60 hover:bg-base-200 transition-colors"><svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg></button><div id="gallery-3d-stage" class="relative w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing" style="perspective: 1000px; user-select: none;">
+  <div class="absolute h-[92%] rounded-2xl overflow-hidden shadow-xl cursor-pointer transition-all ease-in-out ring-2 ring-white/30" style="aspect-ratio: 0.75 / 1;" onclick="openLightbox('uploads/abanoub-sara-formal.jpg')">
+    <img alt="Abanoub &amp; Sara Formal Photo" class="h-full w-full object-cover" src="uploads/abanoub-sara-formal.jpg" style="object-position: 50% 20%;">
+  </div>
+  <div class="absolute h-[92%] rounded-2xl overflow-hidden shadow-xl cursor-pointer transition-all ease-in-out" style="aspect-ratio: 1.25 / 1;" onclick="openLightbox('uploads/abanoub-sara-carousel.jpg')">
+    <img alt="Abanoub &amp; Sara Carousel Photo" class="h-full w-full object-cover" src="uploads/abanoub-sara-carousel.jpg" style="object-position: 50% 50%;">
+  </div>
+  <div class="absolute h-[92%] rounded-2xl overflow-hidden shadow-xl cursor-pointer transition-all ease-in-out" style="aspect-ratio: 0.75 / 1;" onclick="openLightbox('uploads/abanoub-sara-heart.jpg')">
+    <img alt="Abanoub &amp; Sara Heart Hands Photo" class="h-full w-full object-cover" src="uploads/abanoub-sara-heart.jpg" style="object-position: 50% 25%;">
+  </div>
+</div></div><div id="gallery-dots-container" class="flex justify-center gap-1.5 mt-3"><button type="button" aria-label="Go to photo 1" class="rounded-full transition-all duration-300 w-6 h-2 bg-current opacity-70"></button><button type="button" aria-label="Go to photo 2" class="rounded-full transition-all duration-300 w-2 h-2 bg-current opacity-25 hover:opacity-40"></button><button type="button" aria-label="Go to photo 3" class="rounded-full transition-all duration-300 w-2 h-2 bg-current opacity-25 hover:opacity-40"></button></div></div></div></div><section class="relative z-10 mx-auto mb-4 w-[88%] max-w-[420px] md:max-w-[560px]"><span aria-hidden="true" class="pointer-events-none absolute block -left-[18%] top-[10%] z-20 w-[24%]" style="will-change: transform; transform: translateY(0px);"><span class="block" style="animation: 6s ease-in-out 0.3s infinite normal none running drFloat; will-change: transform;"><img alt="" class="block w-full max-w-none object-contain drop-shadow-[3px_4px_3px_rgba(0,0,0,0.3)] " src="images/themes/minimalism-dark-red/flower2-decoration.webp"></span></span><div class="relative overflow-hidden rounded-[10px] px-5 py-9 text-center shadow-[4px_4px_10px_rgba(0,0,0,0.25)]"><div aria-hidden="true" class="absolute inset-0 rounded-[10px]" style="background-color: rgb(81, 20, 25);"></div><img alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 size-full max-w-none object-cover mix-blend-multiply opacity-40 rounded-[10px]" src="images/themes/minimalism-dark-red/paper.webp"><div class="relative z-10 flex flex-col items-center gap-6"><h2 class="uppercase text-center relative z-10" style="color: rgb(236, 228, 216); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif; font-weight: 700; letter-spacing: 0.03em;"><span class="text-[20px]"><span dir="auto">RECEPTION INFO</span></span></h2><div class="flex flex-col items-center gap-4 md:gap-5 text-center" data-landing-screenshot-id="invite-reception" style="font-family: Baskerville, &quot;Times New Roman&quot;, ChungDoiIndic, serif; color: rgb(236, 228, 216);"><h3 class="font-normal uppercase text-[16px] md:text-[20px] flex flex-col items-center" style="color: rgb(236, 228, 216); font-family: Baskerville, &quot;Times New Roman&quot;, ChungDoiIndic, serif; text-transform: uppercase;"><span dir="auto">The reception will take place&nbsp;at:</span></h3><div class="flex w-full max-w-[130px] items-center justify-between px-0 text-[13px] md:text-[15px] uppercase whitespace-nowrap min-w-max gap-x-3" style="color: rgba(236, 228, 216, 0.7); font-family: Baskerville, &quot;Times New Roman&quot;, ChungDoiIndic, serif;"><span>7:00 PM</span><span><span dir="auto">SUNDAY</span></span></div><div class="flex items-center justify-center gap-4" style="color: rgb(236, 228, 216); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif;"><span class="text-[40px] md:text-[46px] leading-none" style="color: rgb(236, 228, 216); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif;">8</span><div class="h-[46px] w-px" style="background-color: rgba(236, 228, 216, 0.45);"></div><div class="flex flex-col items-start justify-center gap-1 text-left"><span class="text-[12px] md:text-[16px] uppercase" style="color: rgb(236, 228, 216); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif;"><span dir="auto">NOVEMBER</span></span><span class="text-[18px] md:text-[24px]" style="color: rgb(236, 228, 216); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif;">2026</span></div></div>
+          <!-- Live Royal Wedding Countdown Timer -->
+          <div id="wedding-countdown-timer" class="my-3 flex items-center justify-center gap-2 sm:gap-3" style="font-family: 'Times New Roman', serif;">
+            <div class="flex flex-col items-center justify-center rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-sm" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(236, 228, 216, 0.35); min-width: 56px; sm:min-width: 64px;">
+              <span id="countdown-days" class="text-[20px] sm:text-[24px] font-bold leading-tight" style="color: rgb(236, 228, 216);">00</span>
+              <span class="text-[9px] uppercase tracking-wider" style="color: rgba(236, 228, 216, 0.75);">Days</span>
+            </div>
+            <span class="text-[16px] font-bold pb-1" style="color: rgba(236, 228, 216, 0.6);">:</span>
+            <div class="flex flex-col items-center justify-center rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-sm" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(236, 228, 216, 0.35); min-width: 56px; sm:min-width: 64px;">
+              <span id="countdown-hours" class="text-[20px] sm:text-[24px] font-bold leading-tight" style="color: rgb(236, 228, 216);">00</span>
+              <span class="text-[9px] uppercase tracking-wider" style="color: rgba(236, 228, 216, 0.75);">Hours</span>
+            </div>
+            <span class="text-[16px] font-bold pb-1" style="color: rgba(236, 228, 216, 0.6);">:</span>
+            <div class="flex flex-col items-center justify-center rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-sm" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(236, 228, 216, 0.35); min-width: 56px; sm:min-width: 64px;">
+              <span id="countdown-mins" class="text-[20px] sm:text-[24px] font-bold leading-tight" style="color: rgb(236, 228, 216);">00</span>
+              <span class="text-[9px] uppercase tracking-wider" style="color: rgba(236, 228, 216, 0.75);">Mins</span>
+            </div>
+            <span class="text-[16px] font-bold pb-1" style="color: rgba(236, 228, 216, 0.6);">:</span>
+            <div class="flex flex-col items-center justify-center rounded-lg px-2.5 py-1.5 sm:px-3 sm:py-2 shadow-sm" style="background: rgba(255, 255, 255, 0.12); border: 1px solid rgba(236, 228, 216, 0.35); min-width: 56px; sm:min-width: 64px;">
+              <span id="countdown-secs" class="text-[20px] sm:text-[24px] font-bold leading-tight" style="color: rgb(236, 228, 216);">00</span>
+              <span class="text-[9px] uppercase tracking-wider" style="color: rgba(236, 228, 216, 0.75);">Secs</span>
+            </div>
+          </div>
+
+<div class="mt-3 mx-auto w-fit max-w-full overflow-hidden rounded-[10px] px-4 pb-4 pt-2" style="background-color: rgb(236, 228, 216);"><div data-showcase-keep="" class="w-full max-w-[280px] md:max-w-[310px] mx-auto rounded-lg overflow-hidden  !max-w-none !w-[280px] md:!w-[330px] mx-auto" style="color: rgb(81, 20, 25);"><div class="text-center py-2.5 text-[13px] md:text-[14px] font-semibold tracking-wide border-b !font-normal" style="border-color: color-mix(in srgb, rgb(81, 20, 25) 27%, transparent 73%); font-family: &quot;The Nautigal&quot;, ChungDoiIndic, cursive; color: rgb(81, 20, 25); font-size: 25px;">November 2026</div><div class="grid grid-cols-7 border-b-2" style="border-color: rgb(81, 20, 25);"><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">Mo</div><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">Tu</div><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">We</div><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">Th</div><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">Fr</div><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">Sa</div><div class="text-center py-1.5 text-[10px] md:text-[11px] font-medium opacity-60">Su</div></div><div class="grid grid-cols-7 gap-y-0.5 px-1 py-2">
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">1</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">2</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">3</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">4</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">5</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">6</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">7</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><div class="relative w-[26px] h-[24px] md:w-[30px] md:h-[28px] flex items-center justify-center"><svg viewBox="0 0 24 22" class="absolute inset-0 w-full h-full drop-shadow-sm" fill="#511419"><path d="M12 21C12 21 1.5 13.5 1.5 7.5C1.5 4.46 3.96 2 7 2C8.76 2 10.35 2.81 11.4 4.09L12 4.8L12.6 4.09C13.65 2.81 15.24 2 17 2C20.04 2 22.5 4.46 22.5 7.5C22.5 13.5 12 21 12 21Z"></path></svg><span class="relative z-10 text-[11px] md:text-[12px] font-bold" style="color: rgb(255, 255, 255);">8</span></div></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">9</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">10</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">11</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">12</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">13</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">14</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">15</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">16</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">17</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">18</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">19</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">20</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">21</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">22</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">23</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">24</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">25</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">26</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">27</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">28</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">29</span></div>
+  <div class="flex items-center justify-center h-[30px] md:h-[34px]"><span class="text-[12px] md:text-[13px]">30</span></div>
+</div></div></div><a href="https://www.google.com/calendar/render?action=TEMPLATE&amp;text=Abanoub%20%26%20Sara%27s%20Wedding&amp;dates=20261108T170000Z/20261108T200000Z&amp;ctz=Africa/Cairo&amp;details=Join%20us%20to%20celebrate%20the%20wedding%20of%20Abanoub%20%26%20Sara%20at%20Church%20of%20the%20Archangels%20Michael%20%26%20Gabriel%20%E2%80%93%20Omm%20El-Masryeen&amp;location=Church%20of%20the%20Archangels%20Michael%20%26%20Gabriel%20%E2%80%93%20Omm%20El-Masryeen" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex items-center justify-center text-sm underline underline-offset-4" data-showcase-join-prev="" style="color: rgb(236, 228, 216); font-family: &quot;Times New Roman&quot;, ChungDoiIndic, serif; background: none;"><span dir="auto">Add to Calendar</span></a></div></div></div></section><div class="relative z-10 overflow-x-clip"><img alt="" aria-hidden="true" class="pointer-events-none absolute max-w-none object-contain opacity-[0.1] left-1/2 top-[-1%] w-[158%] -translate-x-1/2" src="images/themes/minimalism-dark-red/castle-background.webp"><section class="relative z-10 flex w-full flex-col items-center px-6 pb-8 pt-8" data-landing-screenshot-id="invite-map">
+  <div class="relative text-center">
+    <h3 class="uppercase text-center" style="color: rgb(81, 20, 25); font-family: 'Times New Roman', ChungDoiIndic, serif; font-weight: 700; letter-spacing: 0.03em;">
+      <span dir="auto">Wedding Ceremony Venue</span>
+    </h3>
+    <div class="whitespace-pre-line mx-auto mt-2 max-w-[320px] text-center text-[14px] md:text-[16px] font-bold leading-relaxed" style="color: rgb(81, 20, 25); font-family: 'Amiri', 'Traditional Arabic', serif;">
+      <span dir="auto">كنيسة رؤساء الملائكه ميخائيل و غبريال بأم المصريين</span>
+    </div>
+    <div class="mx-auto mt-1 max-w-[320px] text-center text-[11px] md:text-[12px] uppercase tracking-wider" style="color: rgba(81, 20, 25, 0.7); font-family: Baskerville, 'Times New Roman', serif;">
+      <span>Church of Archangels Michael &amp; Gabriel – Omm El-Masryeen</span>
+    </div>
+    <div class="mt-1 text-[13px] font-semibold" style="color: #8a6538; font-family: 'Amiri', serif;">
+      <span>إكليل الساعة 7:00 مساءً</span>
+    </div>
+  </div>
+
+  <!-- Interactive Map Card with Direct Google Maps Link -->
+  <div class="relative flex flex-col items-center gap-4 w-full mt-3" data-showcase-keep="">
+    <div class="relative mt-2 h-[280px] w-full max-w-[340px] md:h-[360px] md:max-w-[540px] rounded-[16px] overflow-hidden shadow-lg border border-amber-900/25 group cursor-pointer transition-transform duration-300 hover:scale-[1.01]" 
+         onclick="window.open('https://maps.app.goo.gl/TRRBn1cU5n5WF8RL6?g_st=aw', '_blank')" 
+         title="انقر لفتح موقع الكنيسة في خرائط جوجل">
+      
+      <!-- Leaflet Interactive Map Container -->
+      <div id="church-leaflet-map" class="w-full h-full z-0"></div>
+
+      <!-- Floating Location Badge on top of map -->
+      <div class="absolute top-3 inset-x-3 pointer-events-none flex justify-center z-[500]">
+        <div class="bg-[#511419]/90 backdrop-blur-sm text-[#f3e8de] text-[11.5px] md:text-[13px] font-semibold px-4 py-1.5 rounded-full shadow-md border border-[#c5a059]/40 flex items-center gap-1.5" style="font-family: 'Amiri', serif;">
+          <span>📍</span> <span>شارع صلاح سالم، أم المصريين، الجيزة</span>
+        </div>
+      </div>
+
+      <!-- Tap to open hint banner at bottom of map -->
+      <div class="absolute bottom-2.5 right-2.5 pointer-events-none z-[500]">
+        <div class="bg-black/60 backdrop-blur-sm text-white/90 text-[10px] md:text-[11px] px-3 py-1 rounded-md flex items-center gap-1">
+          <span>انقر لعرض المسار في خرائط جوجل ↗</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Direct Directions Action Button -->
+    <a href="https://maps.app.goo.gl/TRRBn1cU5n5WF8RL6?g_st=aw" target="_blank" rel="noopener noreferrer" 
+      class="inline-flex items-center gap-2 rounded-full px-7 py-3 text-sm md:text-base font-semibold transition-all hover:scale-[1.03] shadow-md hover:shadow-lg active:scale-95" 
+      style="background: linear-gradient(135deg, #7a1f26, #511419); color: #ece4d8; font-family: Baskerville, 'Times New Roman', serif;">
+      <svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="3 11 22 2 13 21 11 13 3 11"></polygon>
+      </svg>
+      <span>Get directions / فتح في خرائط جوجل</span>
+    </a>
+  </div>
+</section></div>
+
+    
+    <!-- ==================== ROYAL GUESTBOOK CARD (WEBSITE SIGNATURE THEME) ==================== -->
+    <section class="relative z-10 mx-auto my-12 w-[88%] max-w-[420px] md:max-w-[560px]" data-landing-screenshot-id="invite-guestbook">
+      <!-- Floating Flower Decoration (Top Left - Clear of Content) -->
+      <span aria-hidden="true" class="pointer-events-none absolute block -left-[14%] -top-[6%] z-20 w-[30%] max-w-[130px]" style="will-change: transform;">
+        <span class="block" style="animation: 6s ease-in-out 0.2s infinite normal none running drFloat; will-change: transform;">
+          <img alt="" class="block w-full max-w-none object-contain drop-shadow-[3px_4px_3px_rgba(0,0,0,0.3)] rotate-[-15deg]" src="images/themes/minimalism-dark-red/flower2-decoration.webp">
+        </span>
+      </span>
+
+      <!-- Main Burgundy Guestbook Card -->
+      <div class="guestbook-card-container px-5 py-8 md:px-7 md:py-9 text-center">
+        <!-- Paper Texture Overlay -->
+        <img alt="" aria-hidden="true" class="pointer-events-none absolute inset-0 size-full max-w-none object-cover mix-blend-multiply opacity-40 rounded-[13px] z-0" src="images/themes/minimalism-dark-red/paper.webp">
+
+        <!-- Card Header Content -->
+        <div class="relative z-10 flex flex-col items-center">
+          <h2 class="uppercase text-center" style="color: rgb(236, 228, 216); font-family: 'Times New Roman', ChungDoiIndic, serif; font-weight: 700; letter-spacing: 0.03em;">
+            <span class="text-[20px]"><span dir="auto">GUEST BOOK</span></span>
+          </h2>
+
+          <!-- Royal Monogram Seal A&S (Clickable for couple access) -->
+          <div class="my-3 cursor-pointer transition-transform hover:scale-105 active:scale-95" onclick="openCoupleAdmin()" title="صندوق رسائل أبانوب وسارة (خاص بالعروسين)">
+            <div class="monogram-seal-gold w-14 h-14 rounded-full flex items-center justify-center mx-auto text-[#fffaf0]">
+              <span class="font-viaoda text-[23px] font-bold select-none tracking-widest" style="font-family: 'Viaoda Libre', serif;">A&amp;S</span>
+            </div>
+          </div>
+
+          <!-- Couple Names in Website's Exact Signature Font (Viaoda Libre & The Nautigal) -->
+          <div class="flex items-center justify-center gap-2.5 my-1">
+            <span class="text-[36px] sm:text-[42px] md:text-[48px] leading-tight font-normal" style="font-family: 'Viaoda Libre', serif; color: rgb(236, 228, 216); letter-spacing: 0.02em;">Abanoub</span>
+            <span class="text-[30px] sm:text-[36px] md:text-[40px] leading-none" style="font-family: 'The Nautigal', cursive; color: #c5a059;">&amp;</span>
+            <span class="text-[36px] sm:text-[42px] md:text-[48px] leading-tight font-normal" style="font-family: 'Viaoda Libre', serif; color: rgb(236, 228, 216); letter-spacing: 0.02em;">Sara</span>
+          </div>
+          
+          <div class="font-cormorant text-[11px] md:text-[12px] uppercase tracking-[3px] mt-1 font-semibold" style="color: #d4af37;">
+            08 · 11 · 2026
+          </div>
+
+          <!-- User's exact requested messages in beautiful typography -->
+          <div class="mt-3 px-2 text-center max-w-[360px]">
+            <p class="text-[12.5px] md:text-[13.5px] leading-relaxed font-serif" style="color: rgba(236, 228, 216, 0.95); font-family: 'Amiri', serif;" dir="rtl">
+              يشرفنا حضوركم ومشاركتكم فرحتنا، لأن وجودكم هو أجمل هدية لينا. ❤️
+            </p>
+            <p class="mt-1.5 text-[11px] md:text-[12px] tracking-wide" style="color: #d4af37; font-family: 'Amiri', serif;" dir="rtl">
+              في انتظاركم بكل حب 🤍✨
+            </p>
+          </div>
+        </div>
+
+        <!-- Stationery Writing Sheet Inside the Card -->
+        <div class="stationery-sheet relative z-10 mt-8 px-7 py-8 sm:px-10 sm:py-9 text-left rounded-[16px]" style="background-color: #faf6ee; border: 1px solid rgba(200, 168, 110, 0.4); box-shadow: inset 0 1px 4px rgba(0,0,0,0.03), 0 6px 22px rgba(0,0,0,0.12);">
+          <!-- Delicate Gold Divider Ornament (Exact Reference Book Style) -->
+          <div class="flex items-center justify-center gap-2 mb-7 opacity-75">
+            <div class="w-20 h-px" style="background: linear-gradient(to right, transparent, #c5a059);"></div>
+            <span style="color: #c5a059; font-size: 10px;">◆</span>
+            <div class="w-20 h-px" style="background: linear-gradient(to left, transparent, #c5a059);"></div>
+          </div>
+
+          <!-- Success Screen (Initially Hidden) -->
+          <div id="book-success-screen" class="hidden relative z-10 flex-col items-center justify-center py-8 text-center">
+            <div class="w-14 h-14 rounded-full text-[#f7e7a9] flex items-center justify-center shadow-lg border border-[#c5a059]/60 mb-3 mx-auto" style="background: radial-gradient(circle at 30% 30%, #8b1e26, #45090f);">
+              <span class="font-viaoda text-[22px] font-bold" style="font-family: 'Viaoda Libre', serif;">A&amp;S</span>
+            </div>
+            <div class="font-cormorant text-[22px] font-bold text-[#511419]" style="font-family: 'Cormorant Garamond', serif;">
+              Sent with Love
+            </div>
+            <p class="mt-2.5 text-[14px] text-[#511419]/90 font-serif max-w-[280px] leading-relaxed mx-auto" dir="rtl" style="font-family: 'Amiri', serif;">
+              شكراً لك من القلب! وصلت تهنئتكم الكريمة وتم حفظها في دفتر ذكريات أبانوب وسارة ✨
+            </p>
+            <p class="mt-1.5 font-cormorant italic text-[12px] text-[#8a6538]">
+              Your heartfelt message is sealed safely for the couple.
+            </p>
+            <button type="button" onclick="resetBookForm()" class="mt-5 text-[12.5px] font-semibold text-[#8a6538] hover:text-[#511419] underline underline-offset-4 font-serif cursor-pointer">
+              + كتابة رسالة أخرى / Send another wish
+            </button>
+          </div>
+
+          <!-- The Refined Guestbook Form (Clean Reference Layout) -->
+          <form id="book-wishes-form" class="relative z-10 flex flex-col" onsubmit="handleBookSubmit(event)">
+            <!-- Field 1: Guest Name -->
+            <div class="mb-8">
+              <label for="book-name-input" class="block uppercase font-semibold text-[11px] mb-2 tracking-[2.5px]" style="font-family: 'Cormorant Garamond', serif; color: #8e7355;">
+                GUEST NAME
+              </label>
+              <input type="text" id="book-name-input" required dir="auto" 
+                placeholder="اكتب اسمك الكريم..." 
+                class="w-full bg-transparent px-1 py-2 text-[15px] outline-none transition-colors placeholder:text-neutral-400/70 placeholder:text-[13px] placeholder:italic" 
+                style="border: none; border-bottom: 1.5px solid #d5c3a5; color: #511419; font-family: 'Amiri', serif;">
+            </div>
+
+            <!-- Field 2: Message with Ruled Lines (Expanded 3 Clean Spaced Lines) -->
+            <div class="mb-9">
+              <label for="book-message-input" class="block uppercase font-semibold text-[11px] mb-2.5 tracking-[2px]" style="font-family: 'Cormorant Garamond', serif; color: #8e7355;">
+                A MESSAGE FOR THE COUPLE
+              </label>
+              <textarea id="book-message-input" rows="3" required dir="auto"
+                placeholder="اكتب تهنئتك للعروسين للذكرى..." 
+                class="w-full bg-transparent outline-none resize-none px-1 text-[15px] placeholder:text-neutral-400/70 placeholder:text-[13px] placeholder:italic pt-1"
+                style="border: none; color: #511419; font-family: 'Amiri', serif; line-height: 44px; height: 132px; background-attachment: local; background-image: repeating-linear-gradient(to bottom, transparent, transparent 42px, #d0bc9d 42px, #d0bc9d 44px);"></textarea>
+            </div>
+
+            <!-- Button: Send with Love -->
+            <button type="submit" id="book-submit-btn" 
+              class="w-full py-3.5 px-6 rounded-[8px] flex items-center justify-center gap-2 transition-all duration-300 hover:scale-[1.01] hover:brightness-110 active:scale-95 shadow-md hover:shadow-lg cursor-pointer"
+              style="background: linear-gradient(180deg, #7a1f26 0%, #511419 100%); border: 1px solid rgba(212, 175, 55, 0.45); box-shadow: 0 4px 16px rgba(81, 20, 25, 0.35);">
+              <span class="uppercase tracking-[3px] text-[13px] font-bold" style="font-family: 'Times New Roman', serif; color: #fff8f0;">SEND WITH LOVE</span>
+              <svg class="w-4 h-4 opacity-95 stroke-current inline-block" style="color: #fdfaf6;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+              </svg>
+            </button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- Invitation Subtle Footer -->
+    <footer class="relative z-10 text-center py-8 text-[12px]" style="color: rgba(81, 20, 25, 0.7); font-family: 'Times New Roman', serif;">
+      <p style="font-family: 'Viaoda Libre', serif; font-size: 16px; color: #511419;">Abanoub &amp; Sara</p>
+      <p class="text-[11px] tracking-[2px] uppercase mt-1" style="font-family: 'Cormorant Garamond', serif; color: #8a6538;">08 . 11 . 2026</p>
+    </footer>
+
+    </div><!-- /data-showcase-root -->
+  </div><!-- /minimalism-darkred-template -->
+</div><!-- /main-content-wrapper -->
+
+  <!-- Lightbox Modal for Gallery -->
+  <div id="lightbox-overlay" onclick="closeLightbox(event)">
+    <button class="lightbox-close-btn" onclick="closeLightbox(event)">&times;</button>
+    <img id="lightbox-target-img" src="" alt="Enlarged photo">
+  </div>
+
+  <script>
+    let isPlaying = false;
+    const music = document.getElementById('bg-music');
+    const musicBtn = document.getElementById('music-btn');
+
+    function openInvitation(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      const seal = document.getElementById('envelope-wax-seal');
+      const envelope = document.getElementById('invite-envelope-container');
+
+      // Start music automatically on click
+      if (music) {
+        music.play().then(() => {
+          isPlaying = true;
+          musicBtn.classList.add('playing');
+        }).catch(err => console.log('Autoplay notice:', err));
+      }
+
+      // 1. Break wax seal with rotation and scale animation
+      if (seal) {
+        seal.style.animation = 'seal-break 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+      }
+
+      // 2. Fly envelope away smoothly with realistic flight physics
+      setTimeout(() => {
+        if (envelope) {
+          envelope.style.animation = 'envelope-away 1.1s cubic-bezier(0.22, 1, 0.36, 1) forwards';
+          setTimeout(() => {
+            envelope.style.display = 'none';
+          }, 1100);
+        }
+      }, 250);
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMusic() {
+      if (music.paused) {
+        music.play().then(() => {
+          isPlaying = true;
+          musicBtn.classList.add('playing');
+        });
+      } else {
+        music.pause();
+        isPlaying = false;
+        musicBtn.classList.remove('playing');
+      }
+    }
+
+    // Make entire envelope clickable or bind all elements with text 'Open'
+    document.addEventListener('DOMContentLoaded', () => {
+      const env = document.getElementById('invite-envelope-container');
+      if (env) {
+        env.querySelectorAll('a, button, div').forEach(el => {
+          if (el.innerText && el.innerText.trim() === 'Open') {
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              openInvitation();
+            });
+          }
+        });
+      }
+
+      // Gallery lightbox
+      const galleryImgs = document.querySelectorAll('#minimalism-darkred-template img');
+      const lightbox = document.getElementById('lightbox-overlay');
+      const lightboxImg = document.getElementById('lightbox-target-img');
+
+      galleryImgs.forEach(img => {
+        if (img.src.includes('uploads') || img.src.includes('gallery')) {
+          img.style.cursor = 'pointer';
+          img.addEventListener('click', () => {
+            lightboxImg.src = img.src;
+            lightbox.classList.add('active');
+          });
+        }
+      });
+
+      // Add to Calendar integration
+      const calBtns = Array.from(document.querySelectorAll('button, a')).filter(el => el.innerText && el.innerText.includes('Add to Calendar'));
+      calBtns.forEach(b => {
+        b.style.cursor = 'pointer';
+        b.onclick = (e) => {
+          e.preventDefault();
+          const title = "Wedding of Abanoub & Sara";
+          const desc = "We joyfully invite you to celebrate the wedding of Abanoub & Sara at Church of the Archangels Michael & Gabriel – Omm El-Masryeen";
+          const location = "Golden Palace Hall, Girga, Sohag, Egypt";
+          const startIso = "20260830T180000Z";
+          const endIso = "20260830T230000Z";
+          const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&dates=${startIso}/${endIso}&details=${encodeURIComponent(desc)}&location=${encodeURIComponent(location)}`;
+          window.open(url, '_blank');
+        };
+      });
+    });
+
+    
+    // Lightbox helper
+    function openLightbox(src) {
+      const overlay = document.getElementById('lightbox-overlay');
+      const targetImg = document.getElementById('lightbox-target-img');
+      if (overlay && targetImg) {
+        targetImg.src = src;
+        overlay.classList.add('active');
+      }
+    }
+
+    // Initialize Leaflet Map for Church Location
+    document.addEventListener('DOMContentLoaded', () => {
+      const mapContainer = document.getElementById('church-leaflet-map');
+      if (mapContainer && typeof L !== 'undefined') {
+        const lat = 30.003812;
+        const lng = 31.209062;
+        const map = L.map('church-leaflet-map', {
+          zoomControl: true,
+          scrollWheelZoom: false,
+          attributionControl: false
+        }).setView([lat, lng], 16);
+
+        L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+          maxZoom: 19
+        }).addTo(map);
+
+        const markerIcon = L.divIcon({
+          className: 'custom-church-marker',
+          html: `
+            <div style="display:flex; flex-direction:column; align-items:center; transform:translate(-50%, -100%);">
+              <div style="background:#511419; color:#f3e8de; padding:4px 12px; border-radius:10px; font-family:'Amiri', serif; font-size:12px; font-weight:bold; box-shadow:0 3px 10px rgba(0,0,0,0.35); border:1px solid #c5a059; white-space:nowrap; margin-bottom:4px;">
+                ⛪ كنيسة رؤساء الملائكة ميخائيل وغبريال
+              </div>
+              <div style="width:30px; height:30px; background:radial-gradient(circle at 35% 35%, #9b232c, #4a0b10); border-radius:50% 50% 50% 0; transform:rotate(-45deg); border:2px solid #fff; box-shadow:0 3px 8px rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center;">
+                <span style="transform:rotate(45deg); font-size:14px;">💍</span>
+              </div>
+            </div>
+          `,
+          iconSize: [0, 0]
+        });
+
+        L.marker([lat, lng], { icon: markerIcon }).addTo(map);
+      }
+    });
+
+    function closeLightbox(e) {
+      if (e.target.id === 'lightbox-overlay' || e.target.classList.contains('lightbox-close-btn')) {
+        document.getElementById('lightbox-overlay').classList.remove('active');
+      }
+    }
+  </script>
+
+  <!-- 3D Coverflow Gallery Engine -->
+  <script>
+    (function init3DGallery() {
+      const stage = document.getElementById('gallery-3d-stage');
+      const prevBtn = document.getElementById('gallery-prev-btn');
+      const nextBtn = document.getElementById('gallery-next-btn');
+      const dotsContainer = document.getElementById('gallery-dots-container');
+
+      if (!stage) return;
+
+      const cards = Array.from(stage.children).filter(el => el.tagName === 'DIV');
+      const dots = dotsContainer ? Array.from(dotsContainer.children) : [];
+      const total = cards.length;
+      let currentIndex = 0;
+
+      // Transform presets for 3D carousel
+      function updateGallery() {
+        cards.forEach((card, i) => {
+          // Calculate shortest relative offset
+          let diff = (i - currentIndex) % total;
+          if (diff > total / 2) diff -= total;
+          if (diff < -total / 2) diff += total;
+
+          card.style.transition = 'transform 600ms cubic-bezier(0.25, 1, 0.5, 1), opacity 600ms, filter 600ms';
+
+          if (diff === 0) {
+            // Center active card
+            card.style.transform = 'translateX(0%) translateZ(0px) rotateY(0deg) scale(1)';
+            card.style.opacity = '1';
+            card.style.zIndex = '100';
+            card.style.filter = 'brightness(1)';
+            card.style.pointerEvents = 'auto';
+            card.classList.add('ring-2', 'ring-white/50');
+          } else if (diff === 1) {
+            // Immediately right
+            card.style.transform = 'translateX(58%) translateZ(-140px) rotateY(42deg) scale(0.85)';
+            card.style.opacity = '0.75';
+            card.style.zIndex = '90';
+            card.style.filter = 'brightness(0.85)';
+            card.style.pointerEvents = 'auto';
+            card.classList.remove('ring-2', 'ring-white/50');
+          } else if (diff === 2) {
+            // Far right
+            card.style.transform = 'translateX(110%) translateZ(-280px) rotateY(85deg) scale(0.7)';
+            card.style.opacity = '0.45';
+            card.style.zIndex = '80';
+            card.style.filter = 'brightness(0.7)';
+            card.style.pointerEvents = 'auto';
+            card.classList.remove('ring-2', 'ring-white/50');
+          } else if (diff === -1) {
+            // Immediately left
+            card.style.transform = 'translateX(-58%) translateZ(-140px) rotateY(-42deg) scale(0.85)';
+            card.style.opacity = '0.75';
+            card.style.zIndex = '90';
+            card.style.filter = 'brightness(0.85)';
+            card.style.pointerEvents = 'auto';
+            card.classList.remove('ring-2', 'ring-white/50');
+          } else if (diff === -2) {
+            // Far left
+            card.style.transform = 'translateX(-110%) translateZ(-280px) rotateY(-85deg) scale(0.7)';
+            card.style.opacity = '0.45';
+            card.style.zIndex = '80';
+            card.style.filter = 'brightness(0.7)';
+            card.style.pointerEvents = 'auto';
+            card.classList.remove('ring-2', 'ring-white/50');
+          } else {
+            // Hidden in back
+            const dir = diff > 0 ? 1 : -1;
+            card.style.transform = `translateX(${dir * 160}%) translateZ(-400px) rotateY(${dir * 120}deg) scale(0.55)`;
+            card.style.opacity = '0';
+            card.style.zIndex = '70';
+            card.style.pointerEvents = 'none';
+            card.classList.remove('ring-2', 'ring-white/50');
+          }
+        });
+
+        // Update dots
+        dots.forEach((dot, i) => {
+          if (i === currentIndex) {
+            dot.className = 'rounded-full transition-all duration-300 w-6 h-2 bg-current opacity-75';
+          } else {
+            dot.className = 'rounded-full transition-all duration-300 w-2 h-2 bg-current opacity-25 hover:opacity-40';
+          }
+        });
+      }
+
+      function goTo(index) {
+        currentIndex = (index + total) % total;
+        updateGallery();
+      }
+
+      function next() {
+        goTo(currentIndex + 1);
+      }
+
+      function prev() {
+        goTo(currentIndex - 1);
+      }
+
+      // Button listeners
+      if (prevBtn) {
+        prevBtn.style.cursor = 'pointer';
+        prevBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          prev();
+        });
+      }
+
+      if (nextBtn) {
+        nextBtn.style.cursor = 'pointer';
+        nextBtn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          next();
+        });
+      }
+
+      // Card click listeners
+      cards.forEach((card, index) => {
+        card.addEventListener('click', (e) => {
+          if (index !== currentIndex) {
+            e.stopPropagation();
+            goTo(index);
+          }
+        });
+      });
+
+      // Dots listeners
+      dots.forEach((dot, index) => {
+        dot.style.cursor = 'pointer';
+        dot.addEventListener('click', (e) => {
+          e.stopPropagation();
+          goTo(index);
+        });
+      });
+
+      // Touch Swipe & Drag Handling
+      let startX = 0;
+      let isDragging = false;
+
+      stage.addEventListener('touchstart', (e) => {
+        startX = e.touches[0].clientX;
+      }, { passive: true });
+
+      stage.addEventListener('touchend', (e) => {
+        const endX = e.changedTouches[0].clientX;
+        const diff = endX - startX;
+        if (Math.abs(diff) > 35) {
+          if (diff < 0) next();
+          else prev();
+        }
+      }, { passive: true });
+
+      // Mouse drag for desktop
+      stage.addEventListener('mousedown', (e) => {
+        startX = e.clientX;
+        isDragging = true;
+      });
+
+      window.addEventListener('mouseup', (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        const diff = e.clientX - startX;
+        if (Math.abs(diff) > 40) {
+          if (diff < 0) next();
+          else prev();
+        }
+      });
+
+      // Keyboard arrow navigation
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowLeft') prev();
+        if (e.key === 'ArrowRight') next();
+      });
+
+      // Initial layout
+      updateGallery();
+    })();
+  </script>
+
+
+  <!-- Live Countdown Timer Engine -->
+  <script>
+    (function initWeddingCountdown() {
+      // Target: Sunday, August 30, 2026 at 20:00 Cairo time (UTC+2)
+      const targetTime = new Date("2026-11-08T19:00:00+02:00").getTime();
+
+      const daysEl = document.getElementById("countdown-days");
+      const hoursEl = document.getElementById("countdown-hours");
+      const minsEl = document.getElementById("countdown-mins");
+      const secsEl = document.getElementById("countdown-secs");
+
+      if (!daysEl) return;
+
+      function updateClock() {
+        const now = new Date().getTime();
+        const diff = targetTime - now;
+
+        if (diff <= 0) {
+          daysEl.textContent = "00";
+          hoursEl.textContent = "00";
+          minsEl.textContent = "00";
+          secsEl.textContent = "00";
+          return;
+        }
+
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        daysEl.textContent = days < 10 ? "0" + days : days;
+        hoursEl.textContent = hours < 10 ? "0" + hours : hours;
+        minsEl.textContent = mins < 10 ? "0" + mins : mins;
+        secsEl.textContent = secs < 10 ? "0" + secs : secs;
+      }
+
+      updateClock();
+      setInterval(updateClock, 1000);
+    })();
+  </script>
+
+
+  
+
+
+  <!-- Private Wishes & Couple Admin Engine -->
+  <script>
+    // ==================== ROYAL GUESTBOOK ENGINE ====================
+    const GOOGLE_SHEETS_WEBAPP_URL = "";
+
+    function handleBookSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('book-name-input').value.trim();
+      const message = document.getElementById('book-message-input').value.trim();
+      if (!name || !message) return;
+
+      const newEntry = {
+        name: name,
+        message: message,
+        time: new Date().toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' }),
+        date: new Date().toLocaleDateString('ar-EG')
+      };
+
+      // 1. Store in private local database
+      let wishes = [];
+      try {
+        wishes = JSON.parse(localStorage.getItem('wedding_private_wishes') || '[]');
+      } catch (err) {}
+      wishes.unshift(newEntry);
+      localStorage.setItem('wedding_private_wishes', JSON.stringify(wishes));
+
+      // 2. Sync to live Google Sheets via /api/wishes
+      fetch('/api/wishes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newEntry)
+      }).then(r => r.json()).then(data => {
+        console.log('[Google Sheets] Successfully appended row:', data);
+      }).catch(err => {
+        console.log('[Google Sheets] Sync notice:', err);
+      });
+
+      // 3. Switch to Success Box
+      const formEl = document.getElementById('book-wishes-form');
+      const succEl = document.getElementById('book-success-screen');
+      if (formEl) formEl.classList.add('hidden');
+      if (succEl) {
+        succEl.classList.remove('hidden');
+        succEl.classList.add('flex');
+      }
+    }
+
+    function resetBookForm() {
+      const formEl = document.getElementById('book-wishes-form');
+      const succEl = document.getElementById('book-success-screen');
+      if (formEl) {
+        formEl.reset();
+        formEl.classList.remove('hidden');
+      }
+      if (succEl) {
+        succEl.classList.add('hidden');
+        succEl.classList.remove('flex');
+      }
+    }
+
+    // Attach form listener
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('private-wishes-form');
+      if (form) form.addEventListener('submit', submitPrivateWish);
+    });
+
+    // ==================== COUPLE PRIVATE INBOX ====================
+    function openCoupleAdmin() {
+      const modal = document.getElementById('couple-admin-modal');
+      if (modal) {
+        modal.style.display = 'flex';
+        document.getElementById('admin-passcode-view').classList.remove('hidden');
+        document.getElementById('admin-messages-view').classList.add('hidden');
+        document.getElementById('couple-passcode').value = '';
+        document.getElementById('passcode-error').classList.add('hidden');
+      }
+    }
+
+    function closeCoupleAdmin() {
+      const modal = document.getElementById('couple-admin-modal');
+      if (modal) modal.style.display = 'none';
+    }
+
+    function unlockCoupleAdmin() {
+      const pass = document.getElementById('couple-passcode').value.trim();
+      const err = document.getElementById('passcode-error');
+      // Passcode for Abanoub & Sara is 2026
+      if (pass === '2026' || pass === 'abanoub' || pass === 'sara' || pass === 'abanoub wafeek') {
+        err.classList.add('hidden');
+        document.getElementById('admin-passcode-view').classList.add('hidden');
+        document.getElementById('admin-messages-view').classList.remove('hidden');
+        renderAdminMessages();
+      } else {
+        err.classList.remove('hidden');
+      }
+    }
+
+    function renderAdminMessages() {
+      const feed = document.getElementById('admin-messages-feed');
+      const countEl = document.getElementById('messages-count');
+      let wishes = [];
+      try {
+        wishes = JSON.parse(localStorage.getItem('wedding_private_wishes') || '[]');
+      } catch (e) {}
+
+      countEl.textContent = 'إجمالي الرسائل: ' + wishes.length;
+      feed.innerHTML = '';
+
+      if (wishes.length === 0) {
+        feed.innerHTML = '<div class="text-center text-neutral-400 py-8 text-[13px]">لا توجد رسائل مسجلة حتى الآن.</div>';
+        return;
+      }
+
+      wishes.forEach((w, idx) => {
+        const item = document.createElement('div');
+        item.className = 'bg-neutral-50 border border-neutral-200 rounded-[10px] p-3 flex flex-col gap-1.5 shadow-sm';
+        item.innerHTML = `
+          <div class="flex items-center justify-between border-b pb-1">
+            <span class="text-[11px] text-neutral-400">${w.date || ''} ${w.time || ''}</span>
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-[13px] text-neutral-800">${escapeHtml(w.name)}</span>
+            </div>
+          </div>
+          <div class="text-[12px] text-neutral-700 leading-relaxed">${escapeHtml(w.message)}</div>
+        `;
+        feed.appendChild(item);
+      });
+    }
+
+    function exportWishesCSV() {
+      let wishes = [];
+      try {
+        wishes = JSON.parse(localStorage.getItem('wedding_private_wishes') || '[]');
+      } catch (e) {}
+
+      if (wishes.length === 0) {
+        alert('لا توجد رسائل لتنزيلها بعد.');
+        return;
+      }
+
+      let csv = "﻿التاريخ,الوقت,اسم المهنئ,الرسالة\n";
+      wishes.forEach(w => {
+        csv += `"${w.date || ''}","${w.time || ''}","${(w.name||'').replace(/"/g, '""')}","${(w.message||'').replace(/"/g, '""')}"\n`;
+      });
+
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'رسائل_تهاني_أبانوب_وسارة.csv';
+      a.click();
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Add secret trigger: Click on footer text or pressing Ctrl+Shift+A
+    document.addEventListener('DOMContentLoaded', () => {
+      const footerTitle = document.querySelector('footer');
+      if (footerTitle) {
+        let clicks = 0;
+        footerTitle.style.cursor = 'pointer';
+        footerTitle.addEventListener('click', () => {
+          clicks++;
+          if (clicks >= 3) {
+            clicks = 0;
+            openCoupleAdmin();
+          }
+        });
+      }
+
+      // Or if URL has ?couple=1
+      if (window.location.search.includes('couple=1') || window.location.search.includes('admin=1')) {
+        openCoupleAdmin();
+      }
+    });
+  </script>
+
+<!-- Hidden Couple Admin Modal (Accessible only with secret passcode 2026) -->
+    <div id="couple-admin-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.85); backdrop-filter:blur(4px); align-items:center; justify-content:center; padding:16px;">
+      <div class="bg-white rounded-[14px] w-full max-w-[460px] max-h-[85vh] overflow-hidden flex flex-col shadow-2xl border border-amber-900/30">
+        <!-- Admin Header -->
+        <div class="px-5 py-4 flex items-center justify-between border-b" style="background-color: rgb(81, 20, 25); color: rgb(236, 228, 216);">
+          <div class="font-bold text-[15px] flex items-center gap-2" style="font-family: 'Times New Roman', serif;">
+            <span>🔐</span> <span>صندوق رسائل أبانوب وسارة</span>
+          </div>
+          <button onclick="closeCoupleAdmin()" class="text-[20px] text-white/70 hover:text-white">&times;</button>
+        </div>
+
+        <!-- Passcode Screen -->
+        <div id="admin-passcode-view" class="p-6 flex flex-col items-center gap-4 text-center">
+          <p class="text-[13px] text-neutral-600">أهلاً أبانوب وسارة! أدخلا كلمة المرور الخاصة بكما لعرض رسائل المهنئين:</p>
+          <input type="password" id="couple-passcode" placeholder="كلمة المرور (2026)" class="rounded-lg border px-4 py-2 text-center text-[14px] outline-none focus:ring-2 focus:ring-amber-900/40">
+          <button onclick="unlockCoupleAdmin()" class="px-6 py-2 rounded-full text-white text-[13px] font-bold" style="background-color: rgb(81, 20, 25);">
+            فتح الصندوق
+          </button>
+          <div id="passcode-error" class="text-red-600 text-[11px] hidden">كلمة المرور غير صحيحة!</div>
+        </div>
+
+        <!-- Messages List Screen -->
+        <div id="admin-messages-view" class="p-4 overflow-y-auto flex-1 hidden flex flex-col gap-3">
+          <div class="flex items-center justify-between px-1">
+            <span id="messages-count" class="text-[12px] font-bold text-neutral-700">الرسائل المستلمة: 0</span>
+            <button onclick="exportWishesCSV()" class="text-[11px] font-semibold text-amber-900 underline">تحميل كملف Excel / CSV</button>
+          </div>
+          <div id="admin-messages-feed" class="flex flex-col gap-2.5 text-right">
+            <!-- Messages feed -->
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+</html>

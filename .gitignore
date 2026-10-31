@@ -1,0 +1,14 @@
+.vercel
+*.py
+*.log
+*.tmp
+temp_*
+preview_*.png
+test_*.png
+fixed_*.png
+formfix_*.png
+new_*.png
+perfect_*.png
+guestbook_*.png
+*.pyc
+__pycache__/
