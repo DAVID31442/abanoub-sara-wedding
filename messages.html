@@ -270,6 +270,17 @@
         <p class="font-amiri text-[16px] text-[#f7e7a9]">جاري تحميل رسائل وتهاني الأحباب من شيت جوجل...</p>
       </div>
 
+      <!-- Permission notice if sheet needs public read access -->
+      <div id="sheet-permission-banner" class="hidden mb-6 p-4 rounded-xl border border-amber-400/40 bg-amber-950/40 text-amber-200 text-[13px] font-amiri flex flex-col sm:flex-row items-center justify-between gap-3">
+        <div class="flex items-center gap-2">
+          <span class="text-[18px]">💡</span>
+          <span><strong>ملاحظة للمزامنة الحية:</strong> لتظهر رسائل الضيوف تلقائياً هنا في الصندوق، تأكد من فتح شيت جوجل وتغيير المشاركة (Share) إلى <strong>«أي شخص لديه الرابط - عارض (Viewer)»</strong>.</span>
+        </div>
+        <a href="https://docs.google.com/spreadsheets/d/1keF65_C_ICYKRCW1JcwCGSbxpE2VC1nADqJziVfDzZo/edit" target="_blank" class="px-3.5 py-1.5 rounded-lg bg-[#c5a059] text-[#511419] font-bold text-[12px] flex-shrink-0 hover:brightness-110">
+          فتح الشيت للتأكد ↗
+        </a>
+      </div>
+
       <!-- Empty State -->
       <div id="empty-state" class="hidden flex flex-col items-center justify-center py-20 text-center bg-white/5 rounded-[20px] border border-white/10 p-8">
         <div class="w-20 h-20 rounded-full wax-seal flex items-center justify-center text-[34px] mb-4">
@@ -360,29 +371,58 @@
 
       let fetchedData = null;
 
-      // Method 1: Try public Google Visualization API (GViz)
+      let isGvizBlocked = false;
+
+      // Method 0: Try Web App GET
       try {
-        const gvizUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('تهاني العروسين')}`;
-        const res = await fetch(gvizUrl);
+        const res = await fetch(WEBAPP_URL);
         if (res.ok) {
-          const rawText = await res.text();
-          // Extract JSON from google.visualization.Query.setResponse(...)
-          const jsonText = rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1);
-          const data = JSON.parse(jsonText);
-          if (data && data.table && data.table.rows) {
-            fetchedData = data.table.rows.map(r => {
-              const c = r.c || [];
-              return {
-                date: c[0] ? (c[0].f || c[0].v || '') : '',
-                time: c[1] ? (c[1].f || c[1].v || '') : '',
-                name: c[2] ? (c[2].f || c[2].v || '') : '',
-                message: c[3] ? (c[3].f || c[3].v || '') : ''
-              };
-            }).filter(w => (w.name || w.message));
+          const json = await res.json();
+          if (json && Array.isArray(json.wishes) && json.wishes.length > 0) {
+            fetchedData = json.wishes;
           }
         }
       } catch (e) {
-        console.log('[Wishes] GViz attempt info:', e);
+        console.log('[Wishes] Web App GET info:', e);
+      }
+
+      // Method 1: Try public Google Visualization API (GViz)
+      if (!fetchedData || fetchedData.length === 0) {
+        try {
+          const gvizUrl = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent('تهاني العروسين')}&headers=1`;
+          const res = await fetch(gvizUrl);
+          if (res.ok) {
+            const rawText = await res.text();
+            const jsonText = rawText.substring(rawText.indexOf('{'), rawText.lastIndexOf('}') + 1);
+            const data = JSON.parse(jsonText);
+            if (data && data.table && data.table.rows) {
+              fetchedData = data.table.rows.map(r => {
+                const c = r.c || [];
+                return {
+                  date: c[0] ? (c[0].f || c[0].v || '') : '',
+                  time: c[1] ? (c[1].f || c[1].v || '') : '',
+                  name: c[2] ? (c[2].f || c[2].v || '') : '',
+                  message: c[3] ? (c[3].f || c[3].v || '') : ''
+                };
+              }).filter(w => (w.name || w.message));
+            }
+          } else if (res.status === 401 || res.status === 403) {
+            isGvizBlocked = true;
+          }
+        } catch (e) {
+          console.log('[Wishes] GViz attempt info:', e);
+          isGvizBlocked = true;
+        }
+      }
+
+      // Show/hide sheet sharing guide if blocked and empty
+      const banner = document.getElementById('sheet-permission-banner');
+      if (banner) {
+        if (isGvizBlocked && (!fetchedData || fetchedData.length === 0)) {
+          banner.classList.remove('hidden');
+        } else {
+          banner.classList.add('hidden');
+        }
       }
 
       // Method 2: If GViz restricted, check local storage backup
