@@ -1065,7 +1065,7 @@
       return div.innerHTML;
     }
 
-    // Add secret trigger: Click on footer text or pressing Ctrl+Shift+A
+    // Add secret trigger: Click on footer text 3 times or passing ?couple=1
     document.addEventListener('DOMContentLoaded', () => {
       const footerTitle = document.querySelector('footer');
       if (footerTitle) {
@@ -1075,14 +1075,14 @@
           clicks++;
           if (clicks >= 3) {
             clicks = 0;
-            openCoupleAdmin();
+            window.location.href = 'messages.html';
           }
         });
       }
 
-      // Or if URL has ?couple=1
+      // Or if URL has ?couple=1 or ?admin=1
       if (window.location.search.includes('couple=1') || window.location.search.includes('admin=1')) {
-        openCoupleAdmin();
+        window.location.href = 'messages.html';
       }
     });
   </script>
